@@ -1,0 +1,82 @@
+import random
+
+class Monster:
+    def __init__(self):
+        self.name = self.generate_name()
+        self.hp = random.randint(100, 300)
+        self.attack_damage = random.randint(10, 30)
+
+    def generate_name(self):
+        adjectives = ["Wild", "Fierce", "Terrifying", "Gigantic", "Savage"]
+        animals = ["Dragon", "Troll", "Ogre", "Werewolf", "Giant Spider"]
+        return f"{random.choice(adjectives)} {random.choice(animals)}"
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.hp = random.randint(150, 250)
+        self.attack_damage = random.randint(15, 25)
+        self.actions = ["Fight", "Run", "Block"]
+
+def attack(attacker, target):
+    damage = random.randint(attacker.attack_damage - 5, attacker.attack_damage + 5)
+    target.hp -= damage
+    print(f"{attacker.name} attacks {target.name} and deals {damage} damage!")
+
+def block(player):
+    print("You raise your shield and brace for impact, reducing damage on the next attack.")
+
+def run(player):
+    print("You attempt to flee from the monster!")
+    chance = random.randint(1, 10)
+    if chance > 5:
+        print("You successfully escape!")
+        return True
+    else:
+        print("You couldn't escape this time!")
+        return False
+
+def display_status(player, monster):
+    print(f"{player.name} has {player.hp} HP remaining.")
+    print(f"{monster.name} has {monster.hp} HP remaining.")
+
+def play_game():
+    player_name = input("Enter your name: ")
+    player = Player(player_name)
+    monster = Monster()
+
+    print(f"A wild {monster.name} appeared! It has {monster.hp} HP.")
+    print("What will you do?")
+
+    while player.hp > 0 and monster.hp > 0:
+        print("\nActions:")
+        for index, action in enumerate(player.actions):
+            print(f"{index + 1}. {action}")
+
+        choice = input("Choose your action: ")
+        if choice == "1":
+            attack(player, monster)
+        elif choice == "2":
+            if run(player):
+                break
+        elif choice == "3":
+            block(player)
+        else:
+            print("Invalid choice. Try again.")
+            continue
+
+        if monster.hp <= 0:
+            print("You defeated the monster!")
+            break
+
+        monster_attack = random.randint(monster.attack_damage - 5, monster.attack_damage + 5)
+        player.hp -= monster_attack
+        print(f"{monster.name} attacks you and deals {monster_attack} damage!")
+
+        if player.hp <= 0:
+            print("Game over! You were defeated by the monster.")
+            break
+
+        display_status(player, monster)
+
+play_game()
